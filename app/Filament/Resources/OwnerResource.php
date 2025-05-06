@@ -33,6 +33,7 @@ class OwnerResource extends Resource
                     ->email()
                     ->required(),
                 TextInput::make("phone")
+                    ->tel()
                     ->required()
                     ->maxLength(15),
             ]);

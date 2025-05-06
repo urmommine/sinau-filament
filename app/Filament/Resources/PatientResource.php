@@ -4,9 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PatientResource\Pages;
 use App\Filament\Resources\PatientResource\RelationManagers;
+use App\Filament\Resources\PatientResource\RelationManagers\TreatmentRelationManager;
 use App\Models\Patient;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -47,6 +49,23 @@ class PatientResource extends Resource
 
                 Select::make("owner_id")
                     ->relationship('owner', 'name')
+                    ->createOptionForm([
+                        Grid::make()
+                            ->columns(2)
+                            ->schema([
+                                TextInput::make("name")
+                                    ->required()
+                                    ->maxLength(255),
+                                TextInput::make("email")
+                                    ->unique()
+                                    ->email()
+                                    ->required(),
+                                TextInput::make("phone")
+                                    ->tel()
+                                    ->required()
+                                    ->maxLength(15),
+                            ])
+                    ])
                     ->required()
                     ->preload(),
 
@@ -77,6 +96,7 @@ class PatientResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -88,7 +108,7 @@ class PatientResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TreatmentRelationManager::class,
         ];
     }
 
